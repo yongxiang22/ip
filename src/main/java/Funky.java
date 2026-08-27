@@ -1,6 +1,29 @@
 import java.util.Scanner;
 
 public class Funky {
+    public static class Task {
+    protected String description;
+    protected boolean isDone;
+
+    public Task(String description) {
+        this.description = description;
+        this.isDone = false;
+    }
+
+    public String getStatusIcon() {
+        return (isDone ? "X" : " "); // mark done task with X
+    }
+
+    public void markAsDone() {
+        this.isDone = true;
+    }
+
+    public void markAsNotDone() {
+        this.isDone = false;
+    }
+
+    
+}
 
 
 
@@ -26,24 +49,42 @@ public class Funky {
         // ECHO LEVEL 1
         Scanner in = new Scanner(System.in);
 
-        String[] list  = new String[100];
+        Task[] list  = new Task[100];
         int index = 0;
+        int idx;
 
         while (true) {
-    String echo = in.nextLine();
+        String echo = in.nextLine();
 
-    if (echo.equals("bye")) {
-        break;
-    }
-
-    if (echo.equals("list")) {
-        for (int i = 0; i < index; i++) {
-            System.out.println((i + 1) + ". " + list[i]);
+        if (echo.equals("bye")) {
+            break;
         }
-        continue;
-    }
 
-    list[index] = echo;
+        if (echo.equals("list")) {
+            for (int i = 0; i < index; i++) {
+                System.out.println((i + 1) + ".[" + list[i].getStatusIcon() + "] " + list[i].description);
+            }
+            continue;
+        }
+
+        if(echo.startsWith("mark")) {
+            idx = Integer.parseInt(echo.split(" ")[1]) - 1;
+            list[idx].markAsDone();
+            System.out.println("Nice! I've marked this task as done:");
+            System.out.println("[" + list[idx].getStatusIcon() + "] " + list[idx].description);
+            continue;
+        }
+
+        if(echo.startsWith("unmark")) {
+            idx = Integer.parseInt(echo.split(" ")[1]) - 1;
+            list[idx].markAsNotDone();
+            System.out.println("OK, I've marked this task as not done yet:");
+            System.out.println("[" + list[idx].getStatusIcon() + "] " + list[idx].description);
+            continue;
+        }
+
+
+    list[index] = new Task(echo);
     index++;
 
     System.out.println("____________________________________________________________");
@@ -51,6 +92,8 @@ public class Funky {
     System.out.println("____________________________________________________________");
 }
 
+    
+   
 
         
 
