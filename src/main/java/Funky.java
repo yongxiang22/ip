@@ -26,17 +26,33 @@ public class Funky {
         // ECHO LEVEL 1
         Scanner in = new Scanner(System.in);
 
+        String[] list  = new String[100];
+        int index = 0;
 
+        while (true) {
+    String echo = in.nextLine();
 
-        while(true){
-            String echo = in.nextLine();
-            if(echo.equals("bye")){
-                break;
-            }
-            System.out.println("____________________________________________________________");
-            System.out.println(echo);
-            System.out.println("____________________________________________________________");
+    if (echo.equals("bye")) {
+        break;
+    }
+
+    if (echo.equals("list")) {
+        for (int i = 0; i < index; i++) {
+            System.out.println((i + 1) + ". " + list[i]);
         }
+        continue;
+    }
+
+    list[index] = echo;
+    index++;
+
+    System.out.println("____________________________________________________________");
+    System.out.println("added: " + echo);
+    System.out.println("____________________________________________________________");
+}
+
+
+        
 
 
         //GOODBYE LEVEL 0
