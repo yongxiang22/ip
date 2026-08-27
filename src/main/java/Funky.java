@@ -25,10 +25,18 @@ public class Funky {
 
         // ECHO LEVEL 1
         Scanner in = new Scanner(System.in);
-        String echo = in.nextLine();
-        System.out.println("____________________________________________________________");
-        System.out.println(echo);
-        System.out.println("____________________________________________________________");
+
+
+
+        while(true){
+            String echo = in.nextLine();
+            if(echo.equals("bye")){
+                break;
+            }
+            System.out.println("____________________________________________________________");
+            System.out.println(echo);
+            System.out.println("____________________________________________________________");
+        }
 
 
         //GOODBYE LEVEL 0
