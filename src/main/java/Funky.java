@@ -1,26 +1,10 @@
 import java.util.Scanner;
 
 public class Funky {
-    public static class Task {
-        protected String description;
-        protected boolean isDone;
+    
 
-        public Task(String description) {
-            this.description = description;
-            this.isDone = false;
-        }
 
-        public String getStatusIcon() {
-            return (isDone ? "X" : " "); // mark done task with X
-        }
 
-        public void markAsDone() {
-            this.isDone = true;
-        }
-
-        public void markAsNotDone() {
-            this.isDone = false;
-        }
 
         public static void main(String[] args) {
             String banner = " _____             _          \n"
@@ -56,7 +40,7 @@ public class Funky {
 
                 if (echo.equals("list")) {
                     for (int i = 0; i < index; i++) {
-                        System.out.println((i + 1) + ".[" + list[i].getStatusIcon() + "] " + list[i].description);
+                        System.out.println((i + 1) + ". " + list[i].toString());
                     }
                     continue;
                 }
@@ -66,6 +50,7 @@ public class Funky {
                     list[idx].markAsDone();
                     System.out.println("Nice! I've marked this task as done:");
                     System.out.println("[" + list[idx].getStatusIcon() + "] " + list[idx].description);
+                    
                     continue;
                 }
 
@@ -76,14 +61,45 @@ public class Funky {
                     System.out.println("[" + list[idx].getStatusIcon() + "] " + list[idx].description);
                     continue;
                 }
+                if (echo.startsWith("deadline")) {
+                    
+                    int first = echo.indexOf('/');
+                    String description = echo.substring(9, first - 1);
+                    
+                    list[index] = new Deadline(description, echo.substring(first + 4));
+                  
+                    System.out.println(list[index]);
+                    index++;
+                    continue;
+                }
+
+                if (echo.startsWith("todo")) {
+                    list[index] = new ToDos(echo.substring(5));
+                    System.out.println("____________________________________________________________");
+                    System.out.println(list[index]);
+                    System.out.println("____________________________________________________________");
+                    index++;
+                    continue;
+                }
+
+                 if (echo.startsWith("event")) {
+                    String[] parts = echo.split("/");
+                    String from = parts[1].replace("from ", "from: ");
+                    String to = parts[2].replace("to ", "to: ");
+                    list[index] = new Events(echo.substring(6, echo.indexOf(" /from")), from, to);
+             
+                    System.out.println(list[index]);
+                    index++;
+                    continue;
+                    
+                    
+                 }
 
 
-                list[index] = new Task(echo);
-                index++;
+                // list[index] = new Task(echo);
+                // index++;
 
-                System.out.println("____________________________________________________________");
-                System.out.println("added: " + echo);
-                System.out.println("____________________________________________________________");
+                
             }
 
 
@@ -92,5 +108,5 @@ public class Funky {
             System.out.println("____________________________________________________________");
 
         }
-    }
+    
 }
