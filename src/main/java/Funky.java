@@ -1,7 +1,11 @@
 import java.util.Scanner;
 
 public class Funky {
-    
+    private static final String DEADLINE_PREFIX = "deadline ";
+    private static final String TODO_PREFIX = "todo ";
+    private static final String EVENT_PREFIX = "event ";
+    private static final String BY_KEYWORD = "/by ";
+    private static final String FROM_KEYWORD = " /from";
 
 
 
@@ -61,20 +65,19 @@ public class Funky {
                     System.out.println("[" + list[idx].getStatusIcon() + "] " + list[idx].description);
                     continue;
                 }
-                if (echo.startsWith("deadline")) {
-                    
-                    int first = echo.indexOf('/');
-                    String description = echo.substring(9, first - 1);
-                    
-                    list[index] = new Deadline(description, echo.substring(first + 4));
-                  
+                if (echo.startsWith(DEADLINE_PREFIX)) {
+                    int byIndex = echo.indexOf(BY_KEYWORD);
+                    String description = echo.substring(DEADLINE_PREFIX.length(), byIndex - 1);
+                    String by = echo.substring(byIndex + BY_KEYWORD.length());
+
+                    list[index] = new Deadline(description, by);
                     System.out.println(list[index]);
                     index++;
                     continue;
-                }
+}
 
-                if (echo.startsWith("todo")) {
-                    list[index] = new ToDos(echo.substring(5));
+                if (echo.startsWith(TODO_PREFIX)) {
+                    list[index] = new ToDo(echo.substring(TODO_PREFIX.length()));
                     System.out.println("____________________________________________________________");
                     System.out.println(list[index]);
                     System.out.println("____________________________________________________________");
@@ -82,11 +85,11 @@ public class Funky {
                     continue;
                 }
 
-                 if (echo.startsWith("event")) {
+                 if (echo.startsWith(EVENT_PREFIX)) {
                     String[] parts = echo.split("/");
                     String from = parts[1].replace("from ", "from: ");
                     String to = parts[2].replace("to ", "to: ");
-                    list[index] = new Events(echo.substring(6, echo.indexOf(" /from")), from, to);
+                    list[index] = new Event(echo.substring(EVENT_PREFIX.length(), echo.indexOf(FROM_KEYWORD)), from, to);
              
                     System.out.println(list[index]);
                     index++;

@@ -1,7 +1,7 @@
-public  class ToDos extends Task {
+public  class ToDo extends Task {
         
         protected char extraIcon;
-        public ToDos(String description) {
+        public ToDo(String description) {
             super(description);
             
             this.extraIcon = 'T';
@@ -16,7 +16,7 @@ public  class ToDos extends Task {
 
         @Override
         public String toString(){
-            return"[ " + getExtraIcon() + "][" + super.getStatusIcon() + "] " + super.description ;
+            return"[" + getExtraIcon() + "][" + super.getStatusIcon() + "] " + super.description ;
         }
 
     }
