@@ -37,12 +37,26 @@ public class Funky {
 
             while (true) {
                 String echo = in.nextLine();
+                // in.close(); 
+                try {
+                    if (echo.isEmpty()) {
+                            throw new FunkyException("Please enter a valid command.");
+                        
+                        }
+                    
 
+                    
+                    }catch (FunkyException e) {
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
+                        
+                        
                 if (echo.equals("bye")) {
                     break;
                 }
 
-                if (echo.equals("list")) {
+                else if (echo.equals("list")) {
                     for (int i = 0; i < index; i++) {
                         System.out.println((i + 1) + ". " + list[i].toString());
                     }
@@ -66,10 +80,19 @@ public class Funky {
                     continue;
                 }
                 if (echo.startsWith(DEADLINE_PREFIX)) {
+                    try {
+                        if (!echo.contains(BY_KEYWORD)) {
+                            throw new FunkyException("Please enter a valid deadline command with /by.");
+                        }
+                    } catch (FunkyException e) {
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
                     int byIndex = echo.indexOf(BY_KEYWORD);
                     String description = echo.substring(DEADLINE_PREFIX.length(), byIndex - 1);
                     String by = echo.substring(byIndex + BY_KEYWORD.length());
 
+                    //list[index] = new Deadline(description, by);
                     list[index] = new Deadline(description, by);
                     System.out.println(list[index]);
                     index++;
@@ -86,6 +109,14 @@ public class Funky {
                 }
 
                  if (echo.startsWith(EVENT_PREFIX)) {
+                    try {
+                        if (!echo.contains(FROM_KEYWORD) || !echo.contains("/to ")) {
+                            throw new FunkyException("Please enter a valid event command with /from and /to.");
+                        }
+                    } catch (FunkyException e) {
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
                     String[] parts = echo.split("/");
                     String from = parts[1].replace("from ", "from: ");
                     String to = parts[2].replace("to ", "to: ");
@@ -107,6 +138,7 @@ public class Funky {
 
 
             //GOODBYE LEVEL 0
+            
             System.out.println("Bye. Hope to see you again soon!");
             System.out.println("____________________________________________________________");
 
