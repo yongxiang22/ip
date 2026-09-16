@@ -1,11 +1,12 @@
 import java.util.Scanner;
-
+import java.util.ArrayList;
 public class Funky {
     private static final String DEADLINE_PREFIX = "deadline ";
     private static final String TODO_PREFIX = "todo ";
     private static final String EVENT_PREFIX = "event ";
     private static final String BY_KEYWORD = "/by ";
     private static final String FROM_KEYWORD = " /from";
+    private static  final String DELETE_PREFIX = "delete ";
 
 
 
@@ -31,7 +32,7 @@ public class Funky {
             // ECHO LEVEL 1
             Scanner in = new Scanner(System.in);
 
-            Task[] list = new Task[100];
+            ArrayList<Task> list = new ArrayList<>();
             int index = 0;
             int idx;
 
@@ -57,26 +58,26 @@ public class Funky {
                 }
 
                 else if (echo.equals("list")) {
-                    for (int i = 0; i < index; i++) {
-                        System.out.println((i + 1) + ". " + list[i].toString());
+                    for (int i = 0; i < list.size(); i++) {
+                        System.out.println((i + 1) + ". " + list.get(i).toString());
                     }
                     continue;
                 }
 
                 if (echo.startsWith("mark")) {
                     idx = Integer.parseInt(echo.split(" ")[1]) - 1;
-                    list[idx].markAsDone();
+                    list.get(idx).markAsDone();
                     System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("[" + list[idx].getStatusIcon() + "] " + list[idx].description);
+                    System.out.println("[" + list.get(idx).getStatusIcon() + "] " + list.get(idx).description);
                     
                     continue;
                 }
 
                 if (echo.startsWith("unmark")) {
                     idx = Integer.parseInt(echo.split(" ")[1]) - 1;
-                    list[idx].markAsNotDone();
+                    list.get(idx).markAsNotDone();
                     System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("[" + list[idx].getStatusIcon() + "] " + list[idx].description);
+                    System.out.println("[" + list.get(idx).getStatusIcon() + "] " + list.get(idx).description);
                     continue;
                 }
                 if (echo.startsWith(DEADLINE_PREFIX)) {
@@ -93,16 +94,15 @@ public class Funky {
                     String by = echo.substring(byIndex + BY_KEYWORD.length());
 
                     //list[index] = new Deadline(description, by);
-                    list[index] = new Deadline(description, by);
-                    System.out.println(list[index]);
-                    index++;
+                    list.add(new Deadline(description, by));
+                    System.out.println(list.get(list.size() - 1));
                     continue;
 }
 
                 if (echo.startsWith(TODO_PREFIX)) {
-                    list[index] = new ToDo(echo.substring(TODO_PREFIX.length()));
+                    list.add(new ToDo(echo.substring(TODO_PREFIX.length())));
                     System.out.println("____________________________________________________________");
-                    System.out.println(list[index]);
+                    System.out.println(list.get(list.size() - 1));
                     System.out.println("____________________________________________________________");
                     index++;
                     continue;
@@ -120,14 +120,17 @@ public class Funky {
                     String[] parts = echo.split("/");
                     String from = parts[1].replace("from ", "from: ");
                     String to = parts[2].replace("to ", "to: ");
-                    list[index] = new Event(echo.substring(EVENT_PREFIX.length(), echo.indexOf(FROM_KEYWORD)), from, to);
+                    list.add(new Event(echo.substring(EVENT_PREFIX.length(), echo.indexOf(FROM_KEYWORD)), from, to));
              
-                    System.out.println(list[index]);
-                    index++;
+                    System.out.println(list.get(list.size() - 1));
                     continue;
                     
                     
                  }
+                 if (echo.startsWith(DELETE_PREFIX)) {
+                    new Delete(list, Integer.parseInt(echo.split(" ")[1]) - 1);
+                    continue;
+                }
 
 
                 // list[index] = new Task(echo);
