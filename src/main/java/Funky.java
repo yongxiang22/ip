@@ -30,9 +30,13 @@ public class Funky {
             System.out.println("____________________________________________________________");
 
             // ECHO LEVEL 1
-            Scanner in = new Scanner(System.in);
-
             ArrayList<Task> list = new ArrayList<>();
+            Scanner in = new Scanner(System.in);
+            Save save = new Save();
+            Extract extract = new Extract();
+            list = extract.Extract(list);
+
+            
             int index = 0;
             int idx;
 
@@ -54,6 +58,8 @@ public class Funky {
                         
                         
                 if (echo.equals("bye")) {
+                    
+                    save.save(list);
                     break;
                 }
 
@@ -95,12 +101,14 @@ public class Funky {
 
                     //list[index] = new Deadline(description, by);
                     list.add(new Deadline(description, by));
+                    save.save(list);
                     System.out.println(list.get(list.size() - 1));
                     continue;
 }
 
                 if (echo.startsWith(TODO_PREFIX)) {
                     list.add(new ToDo(echo.substring(TODO_PREFIX.length())));
+                    save.save(list);
                     System.out.println("____________________________________________________________");
                     System.out.println(list.get(list.size() - 1));
                     System.out.println("____________________________________________________________");
@@ -118,10 +126,10 @@ public class Funky {
                         continue;
                     }
                     String[] parts = echo.split("/");
-                    String from = parts[1].replace("from ", "from: ");
-                    String to = parts[2].replace("to ", "to: ");
+                    String from = parts[1].trim().substring(4).trim(); // strip leading "from"
+                    String to = parts[2].trim().substring(2).trim();    // strip leading "to"
                     list.add(new Event(echo.substring(EVENT_PREFIX.length(), echo.indexOf(FROM_KEYWORD)), from, to));
-             
+                    save.save(list);
                     System.out.println(list.get(list.size() - 1));
                     continue;
                     
@@ -129,6 +137,7 @@ public class Funky {
                  }
                  if (echo.startsWith(DELETE_PREFIX)) {
                     new Delete(list, Integer.parseInt(echo.split(" ")[1]) - 1);
+                    save.save(list);
                     continue;
                 }
 
