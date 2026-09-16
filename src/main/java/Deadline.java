@@ -11,12 +11,15 @@ public class Deadline extends Task {
         public char getExtraIcon(){
             return extraIcon;
         }
+        public String getBy() {
+            return by;
+        }
 
          
 
         @Override
         public String toString(){
-            return"[" + getExtraIcon() + "][" + super.getStatusIcon() + "] " + super.description + " (by: " + by + ")";
+            return"[" + getExtraIcon() + "][" + super.getStatusIcon() + "] " + super.description + "(by: " + by + ")";
         }
 
     }

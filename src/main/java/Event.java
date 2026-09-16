@@ -15,6 +15,14 @@ public  class Event extends Task {
         public char getExtraIcon(){
             return extraIcon;
         }
+
+        public String getFrom() {
+            return from;
+        }
+
+        public String getTo() {
+            return to;
+        }
         
 
          
@@ -22,7 +30,7 @@ public  class Event extends Task {
         @Override
         public String toString(){
             
-            return"[" + getExtraIcon() + "][" + super.getStatusIcon() + "] " + super.description + "( " + from  + " " +  to + ")";
+            return"[" + getExtraIcon() + "][" + super.getStatusIcon() + "] " + super.description + "(from: " + from + " to: " + to + ")";
         }
 
     }

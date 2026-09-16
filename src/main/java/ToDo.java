@@ -12,6 +12,10 @@ public  class ToDo extends Task {
             return extraIcon;
         }
 
+        public void setExtraIcon() {
+            this.extraIcon = 'T';
+        }
+
          
 
         @Override
