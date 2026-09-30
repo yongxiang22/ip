@@ -85,7 +85,7 @@ public class Funky {
                     System.out.println("OK, I've marked this task as not done yet:");
                     System.out.println("[" + list.get(idx).getStatusIcon() + "] " + list.get(idx).description);
                     continue;
-                }
+                }//:)
                 if (echo.startsWith(DEADLINE_PREFIX)) {
                     try {
                         if (!echo.contains(BY_KEYWORD)) {
