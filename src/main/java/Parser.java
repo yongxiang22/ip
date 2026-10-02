@@ -24,6 +24,13 @@ public class Parser {
         }
     }
 
+    public static String parseFindKeyword(String arguments) throws FunkyException {
+        if (arguments.isEmpty()) {
+            throw new FunkyException("Please give a keyword to search for, e.g. find book.");
+        }
+        return arguments;
+    }
+
     public static ToDo parseTodo(String arguments) throws FunkyException {
         if (arguments.isEmpty()) {
             throw new FunkyException("The description of a todo cannot be empty.");

@@ -34,6 +34,17 @@ public class TaskList {
         return new ArrayList<>(tasks);
     }
 
+    public List<Task> find(String keyword) {
+        String lowerKeyword = keyword.toLowerCase();
+        List<Task> matches = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
+                matches.add(task);
+            }
+        }
+        return matches;
+    }
+
     private void checkIndex(int index) throws FunkyException {
         if (index < 0 || index >= tasks.size()) {
             throw new FunkyException("Task number " + (index + 1) + " does not exist.");

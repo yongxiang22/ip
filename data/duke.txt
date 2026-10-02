@@ -1,6 +1,11 @@
-[E][X]   eifheif(from: efhehf       to: efheiohf)
-[E][ ]   ejfjheuhf(from: efuhefuh      to: efjhaef)
-[D][ ]   eafjheuhof(by: efjheufh)
-[D][ ]   afh(by: jfhe)
-[T][ ]   test
-[T][ ]  test
+[E][ ] ejfjheuhf (from: efuhefuh to: efjhaef)
+[D][ ] eafjheuhof (by: efjheufh)
+[D][ ] afh (by: jfhe)
+[T][ ] test
+[T][ ] test
+[T][ ] read book
+[T][ ] readbook
+[T][ ] readbook
+[D][ ] readbook (by: 2019-09-09)
+[E][ ] book fair (from: Mon 2pm to: 4pm)
+[T][ ] buy milk
