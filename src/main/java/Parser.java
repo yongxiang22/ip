@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 public class Parser {
     private static final String BY_KEYWORD = "/by ";
     private static final String FROM_KEYWORD = "/from ";
@@ -48,10 +51,11 @@ public class Parser {
             throw new FunkyException("The description of a deadline cannot be empty.");
         }
         String by = arguments.substring(byIndex + BY_KEYWORD.length()).trim();
-        if (by.isEmpty()) {
-            throw new FunkyException("The /by part of a deadline cannot be empty.");
+        try {
+            return new Deadline(description, LocalDate.parse(by));
+        } catch (DateTimeParseException e) {
+            throw new FunkyException("Please enter the date as yyyy-MM-dd, e.g. 2019-10-15.");
         }
-        return new Deadline(description, by);
     }
 
     public static Event parseEvent(String arguments) throws FunkyException {
