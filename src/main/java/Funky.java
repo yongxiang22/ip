@@ -20,7 +20,7 @@ public class Funky {
 
     public void run() {
         ui.showWelcome();
-        ui.showLoadWarnings(storage.getLoadWarnings());
+        
         boolean isExit = false;
         while (!isExit) {
             String fullCommand = ui.readCommand();
