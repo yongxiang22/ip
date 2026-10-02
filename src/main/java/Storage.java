@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,8 +102,12 @@ public class Storage {
             throw new FunkyException("Bad deadline");
         }
         String description = body.substring(0, byIndex).trim();
-        String by = body.substring(byIndex + BY_MARKER.length(), body.length() - 1).trim();
-        return new Deadline(description, by);
+        String date = body.substring(byIndex + BY_MARKER.length(), body.length() - 1);
+        try {
+            return new Deadline(description, LocalDate.parse(date, Deadline.DISPLAY_FORMAT));
+        } catch (DateTimeParseException e) {
+            throw new FunkyException("Bad date");
+        }
     }
 
     private Event parseEvent(String body) throws FunkyException {
