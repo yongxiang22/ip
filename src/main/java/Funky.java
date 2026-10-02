@@ -1,124 +1,94 @@
-import java.util.ArrayList;
-
-/**
- * Entry point of the Funky task manager. Reads commands from the user and
- * updates the task list accordingly.
- */
 public class Funky {
-    private static final String DEADLINE_PREFIX = "deadline ";
-    private static final String TODO_PREFIX = "todo ";
-    private static final String EVENT_PREFIX = "event ";
-    private static final String BY_KEYWORD = "/by ";
-    private static final String FROM_KEYWORD = " /from";
-    private static final String DELETE_PREFIX = "delete ";
+    private static final String FILE_PATH = "data/duke.txt";
 
-    /**
-     * Runs the application until the user enters {@code bye}.
-     *
-     * @param args Command line arguments (unused).
-     */
-    public static void main(String[] args) {
-        Ui ui = new Ui();
+    private final Ui ui;
+    private final Storage storage;
+    private final TaskList tasks;
+
+    public Funky(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        TaskList loaded;
+        try {
+            loaded = new TaskList(storage.load());
+        } catch (FunkyException e) {
+            ui.showError(e.getMessage());
+            loaded = new TaskList();
+        }
+        tasks = loaded;
+    }
+
+    public void run() {
         ui.showWelcome();
-
-        ArrayList<Task> list = new ArrayList<>();
-        Save save = new Save();
-        Extract extract = new Extract();
-        list = extract.Extract(list);
-
-        int idx;
-
-        while (true) {
-            String echo = ui.readCommand();
+        ui.showLoadWarnings(storage.getLoadWarnings());
+        boolean isExit = false;
+        while (!isExit) {
+            String fullCommand = ui.readCommand();
+            ui.showLine();
             try {
-                if (echo.isEmpty()) {
-                    throw new FunkyException("Please enter a valid command.");
+                String commandWord = Parser.getCommandWord(fullCommand);
+                String arguments = Parser.getArguments(fullCommand);
+                switch (commandWord) {
+                case "bye":
+                    ui.showBye();
+                    isExit = true;
+                    break;
+                case "list":
+                    ui.showTaskList(tasks.asList());
+                    break;
+                case "mark":
+                    markTask(Parser.parseIndex(arguments, commandWord), true);
+                    break;
+                case "unmark":
+                    markTask(Parser.parseIndex(arguments, commandWord), false);
+                    break;
+                case "delete":
+                    deleteTask(Parser.parseIndex(arguments, commandWord));
+                    break;
+                case "todo":
+                    addTask(Parser.parseTodo(arguments));
+                    break;
+                case "deadline":
+                    addTask(Parser.parseDeadline(arguments));
+                    break;
+                case "event":
+                    addTask(Parser.parseEvent(arguments));
+                    break;
+                default:
+                    throw new FunkyException("Sorry, I don't understand that command.");
                 }
             } catch (FunkyException e) {
                 ui.showError(e.getMessage());
-                continue;
-            }
-
-            if (echo.equals("bye")) {
-                save.save(list);
-                break;
-            } else if (echo.equals("list")) {
-                for (int i = 0; i < list.size(); i++) {
-                    ui.showMessage((i + 1) + ". " + list.get(i).toString());
-                }
-                continue;
-            }
-
-            if (echo.startsWith("mark")) {
-                idx = Integer.parseInt(echo.split(" ")[1]) - 1;
-                list.get(idx).markAsDone();
-                ui.showMessage("Nice! I've marked this task as done:");
-                ui.showMessage("[" + list.get(idx).getStatusIcon() + "] " + list.get(idx).description);
-                continue;
-            }
-
-            if (echo.startsWith("unmark")) {
-                idx = Integer.parseInt(echo.split(" ")[1]) - 1;
-                list.get(idx).markAsNotDone();
-                ui.showMessage("OK, I've marked this task as not done yet:");
-                ui.showMessage("[" + list.get(idx).getStatusIcon() + "] " + list.get(idx).description);
-                continue;
-            }
-
-            if (echo.startsWith(DEADLINE_PREFIX)) {
-                try {
-                    if (!echo.contains(BY_KEYWORD)) {
-                        throw new FunkyException("Please enter a valid deadline command with /by.");
-                    }
-                } catch (FunkyException e) {
-                    ui.showError(e.getMessage());
-                    continue;
-                }
-                int byIndex = echo.indexOf(BY_KEYWORD);
-                String description = echo.substring(DEADLINE_PREFIX.length(), byIndex - 1);
-                String by = echo.substring(byIndex + BY_KEYWORD.length());
-
-                list.add(new Deadline(description, by));
-                save.save(list);
-                ui.showMessage(list.get(list.size() - 1).toString());
-                continue;
-            }
-
-            if (echo.startsWith(TODO_PREFIX)) {
-                list.add(new ToDo(echo.substring(TODO_PREFIX.length())));
-                save.save(list);
+            } finally {
                 ui.showLine();
-                ui.showMessage(list.get(list.size() - 1).toString());
-                ui.showLine();
-                continue;
-            }
-
-            if (echo.startsWith(EVENT_PREFIX)) {
-                try {
-                    if (!echo.contains(FROM_KEYWORD) || !echo.contains("/to ")) {
-                        throw new FunkyException("Please enter a valid event command with /from and /to.");
-                    }
-                } catch (FunkyException e) {
-                    ui.showError(e.getMessage());
-                    continue;
-                }
-                String[] parts = echo.split("/");
-                String from = parts[1].trim().substring(4).trim(); // strip leading "from"
-                String to = parts[2].trim().substring(2).trim(); // strip leading "to"
-                String description = echo.substring(EVENT_PREFIX.length(), echo.indexOf(FROM_KEYWORD));
-                list.add(new Event(description, from, to));
-                save.save(list);
-                ui.showMessage(list.get(list.size() - 1).toString());
-                continue;
-            }
-
-            if (echo.startsWith(DELETE_PREFIX)) {
-                new Delete(list, Integer.parseInt(echo.split(" ")[1]) - 1);
-                save.save(list);
-                continue;
             }
         }
+    }
 
-        ui.showGoodbye();
+    private void addTask(Task task) throws FunkyException {
+        tasks.add(task);
+        storage.save(tasks.asList());
+        ui.showTaskAdded(task, tasks.size());
+    }
+
+    private void deleteTask(int index) throws FunkyException {
+        Task removed = tasks.delete(index);
+        storage.save(tasks.asList());
+        ui.showTaskDeleted(removed, tasks.size());
+    }
+
+    private void markTask(int index, boolean isDone) throws FunkyException {
+        Task task = tasks.get(index);
+        if (isDone) {
+            task.markAsDone();
+        } else {
+            task.markAsNotDone();
+        }
+        storage.save(tasks.asList());
+        ui.showTaskMarked(task, isDone);
+    }
+
+    public static void main(String[] args) {
+        new Funky(FILE_PATH).run();
     }
 }

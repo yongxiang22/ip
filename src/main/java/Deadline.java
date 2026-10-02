@@ -1,25 +1,29 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 public class Deadline extends Task {
-        protected String by;
-        protected char extraIcon;
-        public Deadline(String description, String by) {
-            super(description);
-            this.by = by;
-            this.extraIcon = 'D';
-        
-        }
+    public static final DateTimeFormatter DISPLAY_FORMAT =
+            DateTimeFormatter.ofPattern("MMM d yyyy", Locale.ENGLISH);
 
-        public char getExtraIcon(){
-            return extraIcon;
-        }
-        public String getBy() {
-            return by;
-        }
+    private final LocalDate by;
 
-         
-
-        @Override
-        public String toString(){
-            return"[" + getExtraIcon() + "][" + super.getStatusIcon() + "] " + super.description + "(by: " + by + ")";
-        }
-
+    public Deadline(String description, LocalDate by) {
+        super(description);
+        this.by = by;
     }
+
+    public LocalDate getBy() {
+        return by;
+    }
+
+    @Override
+    protected String getTypeIcon() {
+        return "D";
+    }
+
+    @Override
+    protected String getDetails() {
+        return " (by: " + by.format(DISPLAY_FORMAT) + ")";
+    }
+}
